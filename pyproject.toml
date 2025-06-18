@@ -2,14 +2,15 @@
 name = "files-manager"
 version = "0.1.0"
 description = "Default template for PDM package"
-authors = [
-    {name = "Victor", email = "victor.ched@gmail.com"},
-]
+authors = [{ name = "Victor", email = "victor.ched@gmail.com" }]
 dependencies = []
 requires-python = "==3.13.*"
 readme = "README.md"
-license = {text = "MIT"}
-
+license = { text = "MIT" }
 
 [tool.pdm]
 distribution = false
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
