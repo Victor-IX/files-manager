@@ -195,3 +195,4 @@ cython_debug/
 path.txt
 pdm.lock
 source/n_config.py
+paths.txt

@@ -4,7 +4,7 @@ from pathlib import Path
 FILE_KEY = ""
 
 # P4 repo root
-REPO_PATH = Path("")
+REPO_PATH = Path(r"")
 
 # List of paths to search in relative to REPO_PATH
 # [Path("")]

@@ -70,8 +70,14 @@ def config_check():
 
 
 if __name__ == "__main__":
+    config_check()
+
+    if not PATHS_FILTER:
+        PATHS_FILTER = [Path("")]
+
     for path in PATHS_FILTER:
         directory = REPO_PATH / path
+        print(f"Searching in {directory}...")
 
         if not directory.exists():
             print(f"Path {directory} does not exist, skipping...")
