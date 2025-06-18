@@ -194,3 +194,4 @@ cython_debug/
 .cursorindexingignore
 path.txt
 pdm.lock
+source/n_config.py

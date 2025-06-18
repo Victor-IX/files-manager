@@ -7,7 +7,8 @@ FILE_KEY = ""
 REPO_PATH = Path("")
 
 # List of paths to search in relative to REPO_PATH
-PATHS_FILTER = [Path("")]
+# [Path("")]
+PATHS_FILTER = []
 
 # List of extensions to ignore
 EXTENSION_BLACKLIST = [".swatches"]
@@ -16,9 +17,10 @@ EXTENSION_BLACKLIST = [".swatches"]
 INCLUSION_PATHS_BLACKLIST = ["!"]
 
 # Inclusion filter for specific paths and file types
-INCLUSION_FILTER = {Path(""): [""]}
+# {Path(""): [""]}
+INCLUSION_FILTER = {}
 
 # Enable inclusion filter, like cgf files for hair, files in "!"...
 IS_INCLUSION = False
 
-OUTPUT_PATH = Path("Paths.txt")
+OUTPUT_PATH = Path("paths.txt")
