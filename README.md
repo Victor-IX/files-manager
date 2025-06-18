@@ -1,1 +1,1 @@
-Script to create a list of file paths using some config
+Script to create a list of file paths using some configs
