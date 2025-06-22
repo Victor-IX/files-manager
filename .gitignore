@@ -196,3 +196,4 @@ path.txt
 pdm.lock
 source/n_config.py
 paths.txt
+.vscode/settings.json

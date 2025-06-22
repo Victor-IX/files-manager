@@ -3,7 +3,7 @@ name = "files-manager"
 version = "0.1.0"
 description = "Default template for PDM package"
 authors = [{ name = "Victor", email = "victor.ched@gmail.com" }]
-dependencies = []
+dependencies = ["pyinstaller>=6.14.1", "pyside6>=6.9.1"]
 requires-python = "==3.13.*"
 readme = "README.md"
 license = { text = "MIT" }
@@ -14,3 +14,6 @@ distribution = false
 [tool.ruff]
 line-length = 120
 target-version = "py312"
+
+[tool.isort]
+profile = "black"

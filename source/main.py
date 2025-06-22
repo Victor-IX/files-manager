@@ -1,89 +1,55 @@
+import sys
+import logging
+
 from pathlib import Path
-from typing import List
+
+from cli import cli_commands
+
+
+args = cli_commands()
+
+
+log_colors = {
+    "DEBUG": "\033[36m",  # Cyan
+    "INFO": "\033[37m",  # White
+    "WARNING": "\033[33m",  # Yellow
+    "ERROR": "\033[31m",  # Red
+    "CRITICAL": "\033[41m",  # Red background
+}
+reset_color = "\033[0m"  # Reset to default color
+
+
+class ColoredFormatter(logging.Formatter):
+    def format(self, record):
+        log_color = log_colors.get(record.levelname, reset_color)
+        message = super().format(record)
+        return f"{log_color}{message}{reset_color}"
+
+
+# Setup logging config
+_format = "[%(asctime)s:%(levelname)s] %(message)s"
+log_path = Path.home() / "AppData" / "Local" / "Star Files"
+color_formatter = ColoredFormatter(_format)
 
 try:
-    from n_config import (
-        REPO_PATH,
-        FILE_KEY,
-        PATHS_FILTER,
-        INCLUSION_PATHS_BLACKLIST,
-        INCLUSION_FILTER,
-        IS_INCLUSION,
-        OUTPUT_PATH,
-        EXTENSION_BLACKLIST,
+    file_handler = logging.handlers.RotatingFileHandler(
+        log_path / "Star Files.log",
+        maxBytes=10 * 1024 * 1024,  # 10 MB
+        backupCount=2,
     )
-except ImportError:
-    from config import (
-        REPO_PATH,
-        FILE_KEY,
-        PATHS_FILTER,
-        INCLUSION_PATHS_BLACKLIST,
-        INCLUSION_FILTER,
-        IS_INCLUSION,
-        OUTPUT_PATH,
-        EXTENSION_BLACKLIST,
-    )
+    file_handler.setFormatter(logging.Formatter(_format))
+    file_handler.doRollover()
+except PermissionError:
+    file_handler = logging.FileHandler(log_path / "Star Files.log")
 
+stream_handler = logging.StreamHandler(stream=sys.stdout)
+stream_handler.setFormatter(color_formatter)
 
-FILES: List[Path] = []
+logging.basicConfig(
+    format=_format,
+    handlers=[file_handler, stream_handler],
+    level=logging.DEBUG if args.debug else logging.INFO,
+)
 
-
-def find_files_by_name(directory):
-    for file_path in directory.rglob(f"*{FILE_KEY}*"):
-        if file_path.is_file():
-            if IS_INCLUSION:
-                if any(flag in str(file_path) for flag in INCLUSION_PATHS_BLACKLIST):
-                    continue
-                for path, extensions in INCLUSION_FILTER.items():
-                    if str(file_path) in (str(path)) and file_path.suffix in extensions:
-                        continue
-            if file_path.suffix in EXTENSION_BLACKLIST:
-                continue
-            file_path: Path = file_path.relative_to(REPO_PATH)
-            FILES.append(file_path)
-
-    return FILES
-
-
-def write_files_to_file():
-    try:
-        OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with open(OUTPUT_PATH, "w") as f:
-            for file in FILES:
-                f.write(f"{file}\n")
-    except Exception as e:
-        print(f"Error writing to file {OUTPUT_PATH}: {e}")
-
-
-def config_check():
-    if not FILE_KEY:
-        print("Please set the FILE_KEY in the configuration file.")
-        exit(1)
-    if REPO_PATH == Path(""):
-        print("Please set the REPO_PATH in the configuration file.")
-        exit(1)
-    if not REPO_PATH.exists():
-        print(f"Repository path {REPO_PATH} does not exist.")
-        exit(1)
-    if IS_INCLUSION:
-        print("Inclusion filter is enabled")
-
-
-if __name__ == "__main__":
-    config_check()
-
-    if not PATHS_FILTER:
-        PATHS_FILTER = [Path("")]
-
-    for path in PATHS_FILTER:
-        directory = REPO_PATH / path
-        print(f"Searching in {directory}...")
-
-        if not directory.exists():
-            print(f"Path {directory} does not exist, skipping...")
-            continue
-
-        find_files_by_name(directory)
-        write_files_to_file()
-
-    print(f"Found {len(FILES)} matching files")
+logger = logging.getLogger(__name__)
+logger.info("Starting Star Files...")
