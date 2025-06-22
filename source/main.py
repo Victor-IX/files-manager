@@ -1,10 +1,13 @@
 import sys
+import ctypes
 import logging
+import logging.handlers
 
 from pathlib import Path
 
-from cli import cli_commands
-
+from cli import cli_commands, run_cli
+from register import register_app
+from main_window import run_gui
 
 args = cli_commands()
 
@@ -28,19 +31,19 @@ class ColoredFormatter(logging.Formatter):
 
 # Setup logging config
 _format = "[%(asctime)s:%(levelname)s] %(message)s"
-log_path = Path.home() / "AppData" / "Local" / "Star Files"
+log_path = Path.home() / "AppData" / "Local" / "Star-Files"
+log_path.mkdir(parents=True, exist_ok=True)
 color_formatter = ColoredFormatter(_format)
 
 try:
     file_handler = logging.handlers.RotatingFileHandler(
-        log_path / "Star Files.log",
+        log_path / "Star-Files.log",
         maxBytes=10 * 1024 * 1024,  # 10 MB
         backupCount=2,
     )
     file_handler.setFormatter(logging.Formatter(_format))
-    file_handler.doRollover()
 except PermissionError:
-    file_handler = logging.FileHandler(log_path / "Star Files.log")
+    file_handler = logging.FileHandler(log_path / "Star-Files.log")
 
 stream_handler = logging.StreamHandler(stream=sys.stdout)
 stream_handler.setFormatter(color_formatter)
@@ -52,4 +55,16 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-logger.info("Starting Star Files...")
+logger.info("Registering Star-Files")
+register_app()
+logger.info("Starting Star-Files...")
+
+logger.info(f"Arguments: {args}")
+
+
+print(f"Star-Files started with arguments: {args}")
+
+if args.test:
+    run_cli(args)
+else:
+    run_gui()

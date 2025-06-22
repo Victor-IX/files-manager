@@ -7,12 +7,8 @@ if exist "dist/release" rd /S /Q "dist/release"
 
 python -OO -m PyInstaller ^
 --clean ^
---noconsole ^
 --noupx ^
 --onefile ^
---windowed ^
---icon="source\resources\icon.ico" ^
---name="Star Files" ^
---version-file="version.txt" ^
+--name="Star-Files" ^
 --distpath="./dist/release" ^
 source\main.py
