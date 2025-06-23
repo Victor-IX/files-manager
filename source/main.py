@@ -1,5 +1,4 @@
 import sys
-import ctypes
 import logging
 import logging.handlers
 
@@ -64,7 +63,5 @@ logger.info(f"Arguments: {args}")
 
 print(f"Star-Files started with arguments: {args}")
 
-if args.test:
-    run_cli(args)
-else:
-    run_gui()
+
+run_gui()
