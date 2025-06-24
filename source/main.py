@@ -1,15 +1,23 @@
 import sys
+import typer
 import logging
 import logging.handlers
 
 from pathlib import Path
 
-from cli import cli_commands, run_cli
 from register import register_app
 from main_window import run_gui
+from cli import cli_commands
+from rich import print
 
-args = cli_commands()
+print("Welcome to [bold green]Star-Files[/bold green]")
 
+# Run CLI version if arguments are provided
+if len(sys.argv) > 1:
+    typer.run(cli_commands)
+
+# This will only run if no arguments are provided
+print("Running GUI")
 
 log_colors = {
     "DEBUG": "\033[36m",  # Cyan
@@ -50,18 +58,13 @@ stream_handler.setFormatter(color_formatter)
 logging.basicConfig(
     format=_format,
     handlers=[file_handler, stream_handler],
-    level=logging.DEBUG if args.debug else logging.INFO,
+    level=logging.DEBUG,
 )
 
 logger = logging.getLogger(__name__)
 logger.info("Registering Star-Files")
 register_app()
 logger.info("Starting Star-Files...")
-
-logger.info(f"Arguments: {args}")
-
-
-print(f"Star-Files started with arguments: {args}")
 
 
 run_gui()

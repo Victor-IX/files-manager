@@ -1,18 +1,22 @@
-from settings import get_enable_inclusion_filter
+import argparse
+import logging
+import typer
+
+from rich import print
+from pathlib import Path
+
+from settings import get_repo_path, get_enable_inclusion_filter
+
+logger = logging.getLogger(__name__)
+cli = typer.Typer(name="StarFiles", help="Query files")
+repo_path = get_repo_path()
 
 
-def query(key):
-    for file_path in directory.rglob(f"*{FILE_KEY}*"):
+def query(key: str, all: bool = False):
+    files = []
+    for file_path in repo_path.rglob(f"*{key}*"):
         if file_path.is_file():
-            if IS_INCLUSION:
-                if any(flag in str(file_path) for flag in INCLUSION_PATHS_BLACKLIST):
-                    continue
-                for path, extensions in INCLUSION_FILTER.items():
-                    if str(file_path) in (str(path)) and file_path.suffix in extensions:
-                        continue
-            if file_path.suffix in EXTENSION_BLACKLIST:
-                continue
-            file_path: Path = file_path.relative_to(REPO_PATH)
-            FILES.append(file_path)
-
-    return FILES
+            file_path: Path = file_path.relative_to(repo_path)
+            files.append(file_path)
+            print(f"[bold green]{file_path}[/bold green]")
+    return files
