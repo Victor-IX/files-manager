@@ -1,5 +1,6 @@
 import configparser
 from pathlib import Path
+from typing import Any
 
 
 class ConfigManager:
@@ -22,8 +23,8 @@ class ConfigManager:
     def get(self, key: str, default: str | None = None) -> str | None:
         return self._parser.get(self.SECTION, key, fallback=default)
 
-    def set(self, key: str, value: str) -> None:
-        self._parser.set(self.SECTION, key, value)
+    def set(self, key: str, value: Any) -> None:
+        self._parser.set(self.SECTION, key, str(value))
         self._save()
 
     def _save(self) -> None:
